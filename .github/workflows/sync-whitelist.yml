@@ -37,39 +37,39 @@ jobs:
           
           # Process and merge
           python3 << 'EOF'
-# Read upstream domains
-upstream_domains = set()
-with open('white_upstream.txt', 'r', encoding='utf-8') as f:
-    for line in f:
-        line = line.strip()
-        if line and not line.startswith('#') and not line.startswith('!'):
-            upstream_domains.add(line)
-
-# Read custom domains from white2.txt (exclude comments and duplicates)
-custom_domains = set()
-try:
-    with open('rules/white2.txt', 'r', encoding='utf-8') as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith('#') and not line.startswith('!'):
-                # Only add if not already in upstream
-                if line not in upstream_domains:
-                    custom_domains.add(line)
-except FileNotFoundError:
-    pass
-
-# Write final result: upstream content + custom unique domains
-with open('white_final.txt', 'w', encoding='utf-8') as f:
-    # Copy entire upstream file (with comments)
-    with open('white_upstream.txt', 'r', encoding='utf-8') as upstream:
-        f.write(upstream.read())
-    
-    # Append custom unique domains
-    if custom_domains:
-        f.write('\n# Custom whitelist entries\n')
-        for domain in sorted(custom_domains):
-            f.write(domain + '\n')
-EOF
+          # Read upstream domains
+          upstream_domains = set()
+          with open('white_upstream.txt', 'r', encoding='utf-8') as f:
+              for line in f:
+                  line = line.strip()
+                  if line and not line.startswith('#') and not line.startswith('!'):
+                      upstream_domains.add(line)
+          
+          # Read custom domains from white2.txt (exclude comments and duplicates)
+          custom_domains = set()
+          try:
+              with open('rules/white2.txt', 'r', encoding='utf-8') as f:
+                  for line in f:
+                      line = line.strip()
+                      if line and not line.startswith('#') and not line.startswith('!'):
+                          # Only add if not already in upstream
+                          if line not in upstream_domains:
+                              custom_domains.add(line)
+          except FileNotFoundError:
+              pass
+          
+          # Write final result: upstream content + custom unique domains
+          with open('white_final.txt', 'w', encoding='utf-8') as f:
+              # Copy entire upstream file (with comments)
+              with open('white_upstream.txt', 'r', encoding='utf-8') as upstream:
+                  f.write(upstream.read())
+              
+              # Append custom unique domains
+              if custom_domains:
+                  f.write('\n# Custom whitelist entries\n')
+                  for domain in sorted(custom_domains):
+                      f.write(domain + '\n')
+          EOF
           
           # Check if file has changed
           if ! cmp -s white_final.txt "${{ env.TARGET_FILE }}"; then
