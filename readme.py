@@ -153,7 +153,7 @@ class ReadMe(object):
             f.write("\n")
             
             f.write("## Star History\n")
-            f.write("[![Star History Chart](https://api.star-history.com/svg?repos=217heidai/adblockfilters&type=Date)](https://star-history.com/#217heidai/adblockfilters&Date)\n")
+            f.write("[![Star History Chart](https://api.star-history.com/svg?repos=Aethersailor/adblockfilters-modified&type=Date)](https://star-history.com/#Aethersailor/adblockfilters-modified&Date)\n")
             '''
             f.write("\n")
             f.write("## 以下是广告\n")
