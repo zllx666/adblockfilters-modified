@@ -3,14 +3,8 @@
 """
 智能合并白名单
 - 保留注释行
-- 对域名进行层级去重（保留父域名）
+- 严格去重（只去除完全相同的域名）
 """
-
-def is_subdomain(domain1, domain2):
-    """检查 domain1 是否是 domain2 的子域名"""
-    if domain1 == domain2:
-        return False
-    return domain1.endswith('.' + domain2)
 
 def merge_whitelist(local_file, upstream_file, output_file):
     """合并本地和上游白名单"""
@@ -42,24 +36,11 @@ def merge_whitelist(local_file, upstream_file, output_file):
             else:
                 upstream_domains.add(line.strip())
     
-    # 合并域名集合
+    # 合并域名集合（Set 自动去除完全相同的域名）
     all_domains = local_domains | upstream_domains
     
-    # 去重：移除所有子域名，只保留父域名
-    final_domains = set()
-    for domain in all_domains:
-        # 检查是否存在父域名
-        has_parent = False
-        for other_domain in all_domains:
-            if domain != other_domain and is_subdomain(domain, other_domain):
-                has_parent = True
-                break
-        
-        if not has_parent:
-            final_domains.add(domain)
-    
-    # 排序域名（按域名层级排序，父域名在前）
-    sorted_domains = sorted(final_domains, key=lambda d: (d.count('.'), d))
+    # 排序域名（按字母顺序）
+    sorted_domains = sorted(all_domains)
     
     # 写入合并后的白名单
     with open(output_file, 'w', encoding='utf-8') as f:
