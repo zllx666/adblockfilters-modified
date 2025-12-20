@@ -1,0 +1,61 @@
+name: Sync Upstream Whitelist
+
+on:
+  schedule:
+    # Run daily at 02:00 UTC (10:00 Beijing Time)
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+env:
+  TZ: Asia/Shanghai
+  UPSTREAM_REPO: 217heidai/adblockfilters
+  UPSTREAM_BRANCH: main
+  TARGET_FILE: rules/white.txt
+
+jobs:
+  sync-whitelist:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      
+      - name: Fetch Upstream Whitelist
+        run: |
+          # Download whitelist from upstream
+          curl -fsSL "https://raw.githubusercontent.com/${{ env.UPSTREAM_REPO }}/${{ env.UPSTREAM_BRANCH }}/${{ env.TARGET_FILE }}" -o white_tmp.txt
+          
+          # Check if file has changed
+          if ! cmp -s white_tmp.txt "${{ env.TARGET_FILE }}"; then
+            echo "Whitelist has been updated"
+            mv white_tmp.txt "${{ env.TARGET_FILE }}"
+            echo "CHANGED=true" >> $GITHUB_ENV
+          else
+            echo "Whitelist is already up to date"
+            rm white_tmp.txt
+            echo "CHANGED=false" >> $GITHUB_ENV
+          fi
+      
+      - name: Commit Changes
+        if: env.CHANGED == 'true'
+        run: |
+          git add "${{ env.TARGET_FILE }}"
+          git commit -m "chore(whitelist): sync from upstream repository
+          
+          Synced from ${{ env.UPSTREAM_REPO }}@${{ env.UPSTREAM_BRANCH }}"
+          git push
+      
+      - name: Summary
+        run: |
+          if [ "${{ env.CHANGED }}" == "true" ]; then
+            echo "✅ Whitelist synchronized successfully"
+          else
+            echo "ℹ️ Whitelist is already up to date"
+          fi
