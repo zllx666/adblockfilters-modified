@@ -20,7 +20,7 @@ class ReadMe(object):
         self.ruleList:List[Rule] = []
         self.proxyList = [
             "",
-            "https://gcore.jsdelivr.net/gh",
+            "https://testingcf.jsdelivr.net/gh",
             "https://github.boki.moe",
             "https://ghfast.top"
         ]
@@ -61,7 +61,7 @@ class ReadMe(object):
         
         for i in range(1, len(self.proxyList)):
             proxy = self.proxyList[i]
-            if proxy.startswith("https://gcore.jsdelivr.net/"):
+            if proxy.startswith("https://testingcf.jsdelivr.net/"):
                 link += " [加速链接%d](%s/Aethersailor/adblockfilters-modified@main/rules/%s) |"%(i, proxy, fileName)
             else:
                 link += " [加速链接%d](%s/https://raw.githubusercontent.com/Aethersailor/adblockfilters-modified/main/rules/%s) |"%(i, proxy, fileName)
@@ -87,7 +87,7 @@ class ReadMe(object):
 
             f.write("## 订阅链接\n")
             f.write("1. 规则x’为规则x的 Lite 版，仅针对国内域名拦截，体积较小（如添加完整规则报错数量限制，请尝试 Lite 规则）\n")
-            f.write("2. 已对 jsdelivr(加速链接1) 缓存进行主动刷新，但仍存在一定刷新延时\n")
+            f.write("2. 已对 testingcf.jsdelivr.net(加速链接1) 缓存进行主动刷新，但仍存在一定刷新延时\n")
             f.write("3. AdGuard 等浏览器插件使用规则1 + 规则2（规则2为规则1的补充，仅适用浏览器插件）\n")
             f.write("\n")
             tmp = "| 规则 | 原始链接 |"
