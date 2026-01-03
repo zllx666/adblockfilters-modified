@@ -5,6 +5,7 @@ from concurrent.futures import ThreadPoolExecutor,as_completed
 
 import httpx
 import IPy
+import pytricia
 from tld import get_tld
 from loguru import logger
 from dns.asyncresolver import Resolver as DNSResolver
@@ -104,7 +105,7 @@ class BlackList(object):
         self.__domainlistUrl_CN_Google = "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/refs/heads/release/google-cn.txt"
         self.__iplistFile_CN = os.getcwd() + "/rules/CN-ip-cidr.txt"
         self.__iplistUrl_CN = "https://raw.githubusercontent.com/Aethersailor/geoip/refs/heads/release/text/cn-ipv4.txt"
-        self.__maxTask = 500
+        self.__maxTask = 2000  # 增大并发数以提升 DNS 解析吞吐量
 
     def __getDomainList(self):
         logger.info("resolve adblock dns backup...")
@@ -138,9 +139,10 @@ class BlackList(object):
             logger.info("China domain list: full[%d], domain[%d], regexp[%d], keyword[%d]"%(len(fullSet),len(domainSet),len(regexpSet),len(keywordSet)))
             return fullSet,domainSet,regexpSet,keywordSet
         
-    def __getIPDict_CN(self):
+    def __getIPTrie_CN(self):
+        """构建中国 IP 前缀树，使用 pytricia 实现 O(32) 时间复杂度的 CIDR 匹配"""
         logger.info("resolve China IP list...")
-        IPDict = dict()
+        pyt = pytricia.PyTricia()
         try:
             if os.path.exists(self.__iplistFile_CN):
                 os.remove(self.__iplistFile_CN)
@@ -153,15 +155,15 @@ class BlackList(object):
             
             if os.path.exists(self.__iplistFile_CN):
                 with open(self.__iplistFile_CN, 'r') as f:
-                    for line in f.readlines():
-                        row = line.replace("\n", "").split("/")
-                        ip, offset = row[0], int(row[1])
-                        IPDict[IPy.parseAddress(ip)[0]] = offset
+                    for line in f:
+                        cidr = line.strip()
+                        if cidr and not cidr.startswith('#'):
+                            pyt.insert(cidr, True)
         except Exception as e:
             logger.error("%s"%(e))
         finally:
-            logger.info("China IP list: %d"%(len(IPDict)))
-            return IPDict
+            logger.info("China IP Trie entries: %d"%(len(pyt)))
+            return pyt
     
     async def __resolve(self, dnsresolver, domain):
         ipList = []
@@ -272,7 +274,8 @@ class BlackList(object):
         logger.info("resolve domain: %d"%(len(domainDict)))
         return domainDict
 
-    def __isChinaDomain(self, domain, ipList, fullSet_CN, domainSet_CN, regexpSet_CN, keywordSet_CN, IPDict_CN):
+    def __isChinaDomain(self, domain, ipList, fullSet_CN, domainSet_CN, regexpSet_CN, keywordSet_CN, IPTrie_CN):
+        """判断域名是否属于中国，使用前缀树进行高效 IP 归属判定"""
         isChinaDomain = False
         try:
             if domain.find(':') > 0:
@@ -309,14 +312,10 @@ class BlackList(object):
                     # IP
                     raise Exception("try to resolve ip")
                 except Exception as e:
-                    # IP
+                    # IP 归属判定：使用前缀树 O(32) 时间复杂度
                     for ip in ipList:
-                        ip = IPy.parseAddress(ip)[0]
-                        for k, v in IPDict_CN.items():
-                            if (ip ^ k) >> (32 - v)  == 0:
-                                isChinaDomain = True
-                                break
-                        if isChinaDomain:
+                        if ip in IPTrie_CN:  # pytricia 前缀树查询
+                            isChinaDomain = True
                             break
                 break
         except Exception as e: 
@@ -335,14 +334,14 @@ class BlackList(object):
             #domainDict = self.__testDomain(domainList, ["1.12.12.12"], 53) # for test
 
             fullSet_CN,domainSet_CN,regexpSet_CN,keywordSet_CN = self.__getDomainSet_CN()
-            IPDict_CN = self.__getIPDict_CN()
+            IPTrie_CN = self.__getIPTrie_CN()  # 使用前缀树替代字典
             blackList = []
-            if len(domainSet_CN) > 100 and len(IPDict_CN) > 100:
+            if len(domainSet_CN) > 100 and len(IPTrie_CN) > 100:
                 thread_pool = ThreadPoolExecutor(max_workers=os.cpu_count() if os.cpu_count() > 4 else 4)
                 taskList = []
                 for domain in domainList:
                     if len(domainDict[domain]):
-                        taskList.append(thread_pool.submit(self.__isChinaDomain, domain, domainDict[domain], fullSet_CN, domainSet_CN, regexpSet_CN, keywordSet_CN, IPDict_CN))
+                        taskList.append(thread_pool.submit(self.__isChinaDomain, domain, domainDict[domain], fullSet_CN, domainSet_CN, regexpSet_CN, keywordSet_CN, IPTrie_CN))
                     else:
                         blackList.append(domain)
                 # 获取解析结果
