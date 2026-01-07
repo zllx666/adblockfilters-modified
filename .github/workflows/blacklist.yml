@@ -38,6 +38,26 @@ jobs:
           cp smartdns.conf $SMARTDNS_PATH/smartdns.conf
           nohup $SMARTDNS_PATH/smartdns -f -x -c $SMARTDNS_PATH/smartdns.conf > /dev/null 2>&1 &
 
+      - name: Wait for SmartDNS
+        run: |
+          python - <<'PY'
+          import time
+          import dns.message
+          import dns.query
+          import dns.rcode
+
+          for i in range(60):
+              try:
+                  q = dns.message.make_query("example.com", "A")
+                  r = dns.query.udp(q, "127.0.0.1", port=5053, timeout=2)
+                  print("SmartDNS ready: rcode=%s" % dns.rcode.to_text(r.rcode()))
+                  break
+              except Exception as e:
+                  time.sleep(1)
+          else:
+              raise SystemExit("SmartDNS not ready")
+          PY
+
       - name: Generate Blacklist
         id: update
         run: |

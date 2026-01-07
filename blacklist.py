@@ -1,8 +1,6 @@
 import os
 import asyncio
 import re
-import socket
-import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -123,8 +121,6 @@ class BlackList(object):
         self.__min_change_ratio = 0.7
         self.__max_change_ratio = 1.5
         self.__min_change_abs = 50000
-        self.__smartdns_wait_retries = 10
-        self.__smartdns_wait_sleep = 1
 
     def __normalize_domain(self, domain: str) -> str:
         domain = domain.strip().lower()
@@ -148,15 +144,6 @@ class BlackList(object):
             if port.isdigit():
                 return host, int(port)
         return address, None
-
-    def __wait_smartdns_ready(self, host="127.0.0.1", port=5053) -> bool:
-        for _ in range(self.__smartdns_wait_retries):
-            try:
-                with socket.create_connection((host, port), timeout=2):
-                    return True
-            except Exception:
-                time.sleep(self.__smartdns_wait_sleep)
-        return False
 
     def __count_lines(self, filename: str) -> int:
         if not os.path.exists(filename):
@@ -448,9 +435,6 @@ class BlackList(object):
             if len(domainList) < 1:
                 return
             
-            if not self.__wait_smartdns_ready():
-                raise RuntimeError("smartdns not ready")
-
             domainDict = self.__testDomain(domainList, ["127.0.0.1"], 5053)
             self.__log_dns_stats()
 
