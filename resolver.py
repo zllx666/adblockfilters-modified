@@ -1,6 +1,7 @@
 import os
 import sys
 import re
+import ipaddress
 from typing import Tuple, Dict, Set, List, NamedTuple, Optional
 
 from tld import get_tld
@@ -51,6 +52,13 @@ class Resolver(object):
         except Exception:
             pass
         return domain
+
+    def __is_ip_address(self, address: str) -> bool:
+        try:
+            ipaddress.ip_address(address)
+            return True
+        except ValueError:
+            return False
 
     def __split_host_port(self, address: str) -> Tuple[str, Optional[str]]:
         address = address.strip()
@@ -137,32 +145,53 @@ class Resolver(object):
         return set()
 
     # host 模式
-    def __resolveHost(self, line) -> Tuple[str]:
+    def __resolveHost(self, line) -> List[Tuple[str, str]]:
         def match(pattern, string):
             return True if re.match(pattern, string) else False
         try:
-            block=None
+            blocks = []
             while True:
                 # #* 注释
                 if match('^#.*', line):
+                    break
+                if match('^!.*', line):
                     break
 
                 line = line.replace('\t', ' ')
                 
                 if line.find('#') > 0:
                     line = line[:line.find('#')].strip()
+                line = line.strip()
+                if not line:
+                    break
                 
-                if line.startswith('0.0.0.0') or line.startswith('127.0.0.1'):
-                    row = line.split(' ')
-                    domain = row[-1]
-                    if domain not in {'localhost', 'localhost.localdomain', 'local', '0.0.0.0'}:
-                        block = self.__analysis(domain)
-                        break
-                raise Exception('"%s": not keep'%(line))
+                row = line.split()
+                if len(row) < 2:
+                    break
+                if not self.__is_ip_address(row[0]):
+                    break
+                for domain in row[1:]:
+                    if domain in {
+                        'localhost',
+                        'localhost.localdomain',
+                        'local',
+                        '0.0.0.0',
+                        '127.0.0.1',
+                        '::1',
+                        '::',
+                        'ip6-localhost',
+                        'ip6-loopback',
+                    }:
+                        continue
+                    try:
+                        blocks.append(self.__analysis(domain))
+                    except Exception:
+                        continue
+                break
         except Exception as e:
             logger.error("%s"%(e))
         finally:
-            return block
+            return blocks
 
     # 从 filter 规则中找出包含的域名
     def __resolveFilterDomain(self, filter) -> Tuple[str, FilterDomainInfo]:
@@ -191,19 +220,15 @@ class Resolver(object):
                 if match('^/.*/$', filter):
                     break
 
-                if match('^\|\|.*\*.*\^$', filter):
-                    break
-
                 # ||example.org^$option
                 # @@||example.org^$option
                 if match('^\|\|.*\^\$.*', filter) or match('^@@\|\|.*\^\$.*', filter):
-                    for opt in self.options:
-                        if match('^\|\|.*\^\$%s'%(opt), filter):
-                            domain_tmp = filter[len('||'):filter.find('^$%s'%(opt))]
-                            break
-                        if match('^@@\|\|.*\^\$%s'%(opt), filter):
-                            domain_tmp = filter[len('@@||'):filter.find('^$%s'%(opt))]
-                            break
+                    anchor = filter.find('^$')
+                    if anchor > 0:
+                        if filter.startswith('@@||'):
+                            domain_tmp = filter[len('@@||'):anchor]
+                        else:
+                            domain_tmp = filter[len('||'):anchor]
                     break
                 # ||example.org
                 if match('^\|\|.*', filter):
@@ -235,6 +260,25 @@ class Resolver(object):
                     domain_tmp = filter[:-len('$network')]
                     if domain_tmp.startswith('@@'):
                         domain_tmp = domain_tmp[2:]
+                    break
+
+                if filter.startswith('@@/') and filter.count('/') >= 2:
+                    break
+
+                # example.org$image or @@example.org$script
+                if '$' in filter:
+                    candidate = filter
+                    if candidate.startswith('@@'):
+                        candidate = candidate[2:]
+                    if candidate.startswith('||'):
+                        candidate = candidate[2:]
+                    elif candidate.startswith('|'):
+                        candidate = candidate[1:]
+                    if candidate.startswith('http://') or candidate.startswith('https://'):
+                        candidate = candidate.split('://', 1)[1]
+                    candidate = candidate[:candidate.find('$')].strip()
+                    if candidate and not candidate.startswith('~'):
+                        domain_tmp = candidate
                     break
 
                 # example.org^
@@ -335,21 +379,33 @@ class Resolver(object):
                     if domain_tmp.find('$') > 0:
                         domain_tmp = domain_tmp[:domain_tmp.find('$')]
                     break
-                
-                # 其它规则
-                raise Exception('"%s": can not resolve domain or ip'%(filter))
+
+                # fallback: treat as a plain domain rule with anchors/options
+                candidate = filter
+                if candidate.startswith('@@'):
+                    candidate = candidate[2:]
+                if candidate.startswith('||'):
+                    candidate = candidate[2:]
+                elif candidate.startswith('|'):
+                    candidate = candidate[1:]
+                for sep in ['$', '^', '/']:
+                    if sep in candidate:
+                        candidate = candidate[:candidate.find(sep)]
+                candidate = candidate.strip()
+                if candidate:
+                    domain_tmp = candidate
+                break
             
             if domain_tmp and not domain_set:
                 candidate = self.__normalize_domain_candidate(domain_tmp)
-                if not candidate:
-                    raise Exception('"%s": not include domain or ip'%(filter))
-                try:
-                    fld, subdomain = self.__analysis(candidate)
-                    domain = "%s.%s"%(subdomain,fld) if len(subdomain) > 0 else "%s"%(fld)
-                    domain_set = {domain}
-                    source = "target"
-                except Exception:
-                    raise Exception('"%s": not include domain or ip'%(filter))
+                if candidate:
+                    try:
+                        fld, subdomain = self.__analysis(candidate)
+                        domain = "%s.%s"%(subdomain,fld) if len(subdomain) > 0 else "%s"%(fld)
+                        domain_set = {domain}
+                        source = "target"
+                    except Exception:
+                        pass
 
             if not domain_set:
                 domain_set = self.__parse_domain_option(filter)
@@ -404,6 +460,10 @@ class Resolver(object):
                         filter = line
                         break
                     unblock = self.__analysis(domain)
+                    break
+                # @@* (exceptions with options or regex)
+                if line.startswith('@@'):
+                    filter = line
                     break
                 # /REGEX/
                 if match('^/.*/$', line):
@@ -522,9 +582,8 @@ class Resolver(object):
                 if len(line) < 1:
                     continue
 
-                block = self.__resolveHost(line)
-                
-                if block:
+                blocks = self.__resolveHost(line)
+                for block in blocks:
                     if block[0] not in blockDict:
                         blockDict[block[0]] = {block[1],}
                     else:

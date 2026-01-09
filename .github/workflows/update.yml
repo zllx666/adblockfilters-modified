@@ -39,9 +39,49 @@ jobs:
           python -m pip install --upgrade pip
           pip install -U tld IPy dnspython httpx loguru pytricia
 
-      - name: Prepare sources and domain backup
+      - name: Update local branch
         run: |
           git pull --rebase origin main
+
+      - name: Sync upstream whitelist
+        run: |
+          curl -fsSL "https://raw.githubusercontent.com/217heidai/adblockfilters/main/rules/white.txt" -o white_upstream.txt
+          python - << 'PY'
+          upstream_domains = set()
+          with open('white_upstream.txt', 'r', encoding='utf-8') as f:
+              for line in f:
+                  line = line.strip()
+                  if line and not line.startswith('#') and not line.startswith('!'):
+                      upstream_domains.add(line)
+
+          custom_domains = set()
+          try:
+              with open('rules/white2.txt', 'r', encoding='utf-8') as f:
+                  for line in f:
+                      line = line.strip()
+                      if line and not line.startswith('#') and not line.startswith('!'):
+                          if line not in upstream_domains:
+                              custom_domains.add(line)
+          except FileNotFoundError:
+              pass
+
+          with open('white_final.txt', 'w', encoding='utf-8') as f:
+              with open('white_upstream.txt', 'r', encoding='utf-8') as upstream:
+                  f.write(upstream.read())
+              if custom_domains:
+                  f.write('\n# Custom whitelist entries\n')
+                  for domain in sorted(custom_domains):
+                      f.write(domain + '\n')
+          PY
+          if ! cmp -s white_final.txt "rules/white.txt"; then
+            mv white_final.txt "rules/white.txt"
+          else
+            rm white_final.txt
+          fi
+          rm -f white_upstream.txt
+
+      - name: Prepare sources and domain backup
+        run: |
           python adblock.py --mode prepare --force
 
       - name: Setup SmartDNS
