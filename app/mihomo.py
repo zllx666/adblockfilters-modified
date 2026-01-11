@@ -29,10 +29,10 @@ class Mihomo(APPBase):
                 f.write("  #\n")
                 if isLite:
                     f.write("  # Title: AdBlock Clash Meta(Mihomo) Lite\n")
-                    f.write("  # Description: 适用于 Clash Meta(Mihomo) 的去广告合并规则，每 8 个小时更新一次。规则源：%s。Lite 版仅针对国内域名拦截。\n"%(self.sourceRule))
+                    f.write("  # Description: 适用于 Clash Meta(Mihomo) 的去广告合并规则，每 12 小时更新一次。规则源：%s。Lite 版仅针对国内域名拦截。\n"%(self.sourceRule))
                 else:
                     f.write("  # Title: AdBlock Clash Meta(Mihomo)\n")
-                    f.write("  # Description: 适用于 Clash Meta(Mihomo) 的去广告合并规则，每 8 个小时更新一次。规则源：%s。\n"%(self.sourceRule))
+                    f.write("  # Description: 适用于 Clash Meta(Mihomo) 的去广告合并规则，每 12 小时更新一次。规则源：%s。\n"%(self.sourceRule))
                 f.write("  # Homepage: %s\n"%(self.homepage))
                 f.write("  # Source: %s/%s\n"%(self.source, os.path.basename(fileName)))
                 f.write("  # Version: %s\n"%(self.version))
