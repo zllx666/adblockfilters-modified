@@ -567,6 +567,12 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1) { remove: true; }
 !
 !
 !
+||analytics.vinovo.si^
+||cs.media.net^
+||bidder.doceree.com^
+||fpcdn.io^
+||fpjs.io^
+||winsurbox.com^
 ||telemetry.tataritv.com^
 ||powa-ingest-prod-*.video-player.arcpublishing.com^
 ||cpu-api.infor.pl^
@@ -48388,6 +48394,9 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1) { remove: true; }
 ! Blocking piwik analytics subdomain(for DNS filtering)
 |piwik.
 !
+||st.freedom24.com^
+||rum.api.intuit.com^
+||trafficmanager.anyclip.com^
 ||r.anime-go.cc^
 ||logs.collector.*.cloud.solarwinds.com^
 ||doppler.hulu.com^
@@ -50648,6 +50657,7 @@ prd.api.bleacherreport.com^
 ||log.ecgh.dk^
 ||log.enuri.com^
 ||log.g-enews.com^
+||log.go.com^
 ||log.iyunmai.com^
 ||log.krs-ix.ru^
 ||log.mappy.net^
@@ -68976,6 +68986,9 @@ $cookie=_awl;maxAge=30,domain=nypost.com|al.com|9news.com
 !
 ! NOTE: Specific rules
 !
+||marketplace.anyclip.com/v*/lre-events
+/log/client/messages$domain=momondo.com|kayak.com
+/s/vestigo/measure$domain=momondo.com|kayak.com
 ||ir.ebaystatic.com/*/s_1x2.gif
 gamespot.com#%#//scriptlet('set-local-storage-item', 'ppid', '$remove$')
 ||openway.deepseeksvc.com/v*/write/rum
@@ -75106,6 +75119,8 @@ adguard.info,adguard.com,adguard.app#$#.hello_from_adguard_advanced_protection_i
 ! Bad:  ||example.com^$cookie=flat_r_mb (should be in cookies_specific.txt)
 !
 !
+! anyclip.com
+$cookie=ac_user_id
 ! Wikia
 $cookie=wikia_beacon_id
 ! Intent IQ
@@ -75954,6 +75969,12 @@ $cookie=bf_visit
 ! Bad:  ||monerominer.rocks^$third-party (should be in adservers.txt)
 !
 !
+! usnews.com
+||usnews.com^$cookie=usn_visitor_id
+! kayak.com
+||kayak.com^$cookie=kmkid
+! momondo.com
+||momondo.com^$cookie=kmkid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/220298
 ||agoda.com^$cookie=agoda.analytics
 ||agoda.com^$cookie=agoda.firstclicks
@@ -76805,11 +76826,9 @@ $cookie=ev_did,domain=diariovasco.com
 ! Good: ||adeventtracker.spotify.com^
 ! Bad:  ||adeventtracker.spotify.com^ (if this is everywhere, should be in tracking_servers.txt)
 !
-!
-! Do not block pixapi.net. It causes issues
-!
 ! Blocking Facebook mobile tracking
-||graph.facebook.com^$app=cl.android|com.shorts.wave.drama|com.drama.happy.look|com.enjoy.fancynovel.better|com.novel.eromance.ugs|com.novel.estory.free.reader.dreame.gp.us|com.fatix.fatixpro|com.coupang.mobile.eats|com.warmweather.forecast.reporter|com.booking
+! Don't use, if an app uses Facebook Login
+||graph.facebook.com^$app=cl.android|com.shorts.wave.drama|com.drama.happy.look|com.enjoy.fancynovel.better|com.novel.eromance.ugs|com.novel.estory.free.reader.dreame.gp.us|com.fatix.fatixpro|com.coupang.mobile.eats|com.warmweather.forecast.reporter|com.booking|com.mysticsense.androidapp
 ! https://github.com/AdguardTeam/AdguardForAndroid/issues/249
 ||adeventtracker.spotify.com^
 ||do-not-tracker.org^
@@ -76968,6 +76987,11 @@ dlsdk.appsflyer.com^
 !
 ! NOTE: Regular rules
 !
+||events-stream-svc.cordial.io^
+||events.gonative.io^
+||matomo.podslink.net^
+||report.*.gbqofs.io^
+||gbxreport-*.wf.com^
 ||mab-mob2.websearchapp.com^
 ||news-events.apple.com^
 ||news-app-events.apple.com^
@@ -77166,7 +77190,7 @@ dlsdk.appsflyer.com^
 ||usdiagnosis.icocofun.com^
 ||eats-ads-event-capture.coupang.com^
 ||trackchecker.ru/stat/
-||googletagmanager.com^$app=app.shinagawa.listentonovels.androidApp|com.edadeal.android
+||googletagmanager.com^$app=app.shinagawa.listentonovels.androidApp|com.edadeal.android|com.mysticsense.androidapp
 ||mon*-misc.fqnovel.com^
 ||clientlog.perfectworldgames.com^
 ||log1.perfectworldgames.com^
@@ -78196,6 +78220,8 @@ investor-web.hdfcfund.com#%#//scriptlet('set-constant', 'smartech', 'noopFunc')
 @@||cdn.optimizely.com/datafiles/*.json$domain=wingstop.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/222178
 @@||pi.ai/ingest/$domain=pi.ai
+! https://github.com/AdguardTeam/AdguardFilters/issues/222093
+@@||log.go.com/log$xmlhttprequest,domain=disneyvacationclub.disney.go.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/221500
 @@||a.klaviyo.com/client/subscriptions/$xmlhttprequest,domain=ahead-nutrition.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/222017
@@ -84445,10 +84471,12 @@ kizi.com#%#window.google_trackConversion = function() {};
 ||shallowblade.com^
 ||shamerain.com^
 ||shapecomb.com^
+||sharedswap.com^
 ||sheargovernor.com^
 ||sheideal.com^
 ||shesubscriptions.com^
 ||shinypond.com^
+||shirtseasons.com^
 ||shirtsidewalk.com^
 ||shiveringspot.com^
 ||shiverscissors.com^
