@@ -47,7 +47,7 @@ adblockfilters 去广告合并规则增强版，每天更新一次。
 3. AdGuard 等浏览器插件使用规则1 + 规则2（规则2为规则1的补充，仅适用浏览器插件）
 
 | 规则 | 原始链接 | 加速链接 | 适配说明 |
-|:-|:-|:-|:-|
+| :- | :- | :- | :- |
 | 规则1 | [原始链接](https://raw.githubusercontent.com/Aethersailor/adblockfilters-modified/main/rules/adblockdns.txt) | [加速链接](https://testingcf.jsdelivr.net/gh/Aethersailor/adblockfilters-modified@main/rules/adblockdns.txt) | AdGuard、AdGuard Home 等 |
 | 规则1' | [原始链接](https://raw.githubusercontent.com/Aethersailor/adblockfilters-modified/main/rules/adblockdnslite.txt) | [加速链接](https://testingcf.jsdelivr.net/gh/Aethersailor/adblockfilters-modified@main/rules/adblockdnslite.txt) | AdGuard、AdGuard Home 等 |
 | 规则2 | [原始链接](https://raw.githubusercontent.com/Aethersailor/adblockfilters-modified/main/rules/adblockfilters.txt) | [加速链接](https://testingcf.jsdelivr.net/gh/Aethersailor/adblockfilters-modified@main/rules/adblockfilters.txt) | AdGuard 等 |
@@ -82,7 +82,7 @@ adblockfilters 去广告合并规则增强版，每天更新一次。
 1. 感谢各位广告过滤规则维护大佬们的辛苦付出。
 
 | 规则 | 类型 | 原始链接 | 加速链接 | 更新日期 |
-|:-|:-|:-|:-|:-|
+| :- | :- | :- | :- | :- |
 | AdGuard Base filter | filter | [原始链接](https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_2_Base/filter.txt) | [加速链接](https://testingcf.jsdelivr.net/gh/Aethersailor/adblockfilters-modified@main/rules/AdGuard_Base_filter.txt) | 2026/01/18 |
 | AdGuard Chinese filter | filter | [原始链接](https://raw.githubusercontent.com/AdguardTeam/FiltersRegistry/master/filters/filter_224_Chinese/filter.txt) | [加速链接](https://testingcf.jsdelivr.net/gh/Aethersailor/adblockfilters-modified@main/rules/AdGuard_Chinese_filter.txt) | 2026/01/18 |
 | AdGuard Mobile Ads filter | filter | [原始链接](https://raw.githubusercontent.com/AdguardTeam/AdguardFilters/master/MobileFilter/sections/adservers.txt) | [加速链接](https://testingcf.jsdelivr.net/gh/Aethersailor/adblockfilters-modified@main/rules/AdGuard_Mobile_Ads_filter.txt) | 2026/01/17 |

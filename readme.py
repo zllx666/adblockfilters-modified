@@ -132,7 +132,7 @@ class ReadMe(object):
                     tmp += " 加速链接%d |"%(i)
             tmp += " 适配说明 |\n"
             f.write(tmp)
-            tmp = "|" + ":-|" * ( 1 + len(self.proxyList) + 1) + "\n"
+            tmp = "| " + ":- | " * ( 1 + len(self.proxyList) + 1) + "\n"
             f.write(tmp)
             f.write("| 规则1 |" + self.__subscribeLink("adblockdns.txt") + " AdGuard、AdGuard Home 等 |\n")
             f.write("| 规则1' |" + self.__subscribeLink("adblockdnslite.txt") + " AdGuard、AdGuard Home 等 |\n")
@@ -176,7 +176,7 @@ class ReadMe(object):
                     tmp += " 加速链接%d |"%(i)
             tmp += " 更新日期 |\n"
             f.write(tmp)
-            tmp = "|" + ":-|" * ( 2 + len(self.proxyList) + 1) + "\n"
+            tmp = "| " + ":- | " * ( 2 + len(self.proxyList) + 1) + "\n"
             f.write(tmp)
             for rule in self.ruleList:
                 f.write("| %s | %s |%s %s |\n" % (rule.name, rule.type, self.__subscribeLink(rule.filename, rule.url),rule.latest))
