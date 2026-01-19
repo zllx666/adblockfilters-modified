@@ -3,6 +3,20 @@ on:
   workflow_dispatch:
   schedule:
   - cron: 0 1 * * *
+  push:
+    branches:
+    - main
+    paths:
+    - adblock.py
+    - blacklist.py
+    - filter.py
+    - resolver.py
+    - updater.py
+    - readme.py
+    - app/**/*.py
+    - scripts/**/*.py
+    - smartdns.conf
+    - .github/workflows/update.yml
 
 concurrency:
   group: rules-${{ github.ref }}
@@ -112,9 +126,19 @@ jobs:
                       print("SmartDNS ready: rcode=%s" % rcode_text)
                       break
                   print("SmartDNS not ready: rcode=%s" % rcode_text)
-              except Exception:
+                  time.sleep(1)
+              except Exception as e:
+                  print("SmartDNS not ready: exception=%s" % e)
                   time.sleep(1)
           else:
+              log_path = "/tmp/smartdns/smartdns.log"
+              try:
+                  with open(log_path, "r", encoding="utf-8", errors="ignore") as f:
+                      lines = f.readlines()[-200:]
+                  print("SmartDNS log tail:")
+                  print("".join(lines))
+              except Exception as e:
+                  print("SmartDNS log unavailable: %s" % e)
               raise SystemExit("SmartDNS not ready")
           PY
 
