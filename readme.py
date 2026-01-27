@@ -1,5 +1,6 @@
 import re
 import os
+import subprocess
 from typing import List
 
 from loguru import logger
@@ -23,8 +24,12 @@ class ReadMe(object):
         self.ruleList:List[Rule] = []
         self.proxyList = [
             "",
-            "https://testingcf.jsdelivr.net/gh"
+            "https://testingcf.jsdelivr.net/gh",
+            "https://gcore.jsdelivr.net/gh",
+            "https://cdn.jsdelivr.net/gh",
         ]
+        self.repo = self._resolve_repo()
+        self.branch = self._resolve_branch()
 
     def getRules(self) -> List[Rule]:
         logger.info("resolve readme...")
@@ -58,15 +63,31 @@ class ReadMe(object):
         if url:
             link += " [原始链接](%s) |"%(url)
         else:
-            link += " [原始链接](https://raw.githubusercontent.com/Aethersailor/adblockfilters-modified/main/rules/%s) |"%(fileName)
+            link += " [原始链接](https://raw.githubusercontent.com/%s/%s/rules/%s) |"%(
+                self.repo,
+                self.branch,
+                fileName,
+            )
         
         for i in range(1, len(self.proxyList)):
             proxy = self.proxyList[i]
             link_name = "加速链接" if len(self.proxyList) == 2 else "加速链接%d" % i
-            if proxy.startswith("https://testingcf.jsdelivr.net/"):
-                link += " [%s](%s/Aethersailor/adblockfilters-modified@main/rules/%s) |"%(link_name, proxy, fileName)
+            if proxy.rstrip("/").endswith("/gh"):
+                link += " [%s](%s/%s@%s/rules/%s) |"%(
+                    link_name,
+                    proxy,
+                    self.repo,
+                    self.branch,
+                    fileName,
+                )
             else:
-                link += " [%s](%s/https://raw.githubusercontent.com/Aethersailor/adblockfilters-modified/main/rules/%s) |"%(link_name, proxy, fileName)
+                link += " [%s](%s/https://raw.githubusercontent.com/%s/%s/rules/%s) |"%(
+                    link_name,
+                    proxy,
+                    self.repo,
+                    self.branch,
+                    fileName,
+                )
         
         return link
     
@@ -183,13 +204,70 @@ class ReadMe(object):
             f.write("\n")
             
             f.write("## Star History\n")
-            f.write('<a href="https://www.star-history.com/#Aethersailor/adblockfilters-modified&Date">\n')
+            f.write('<a href="https://www.star-history.com/#%s&Date">\n' % self.repo)
             f.write(' <picture>\n')
-            f.write('   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Aethersailor/adblockfilters-modified&type=Date&theme=dark" />\n')
-            f.write('   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=Aethersailor/adblockfilters-modified&type=Date" />\n')
-            f.write('   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=Aethersailor/adblockfilters-modified&type=Date" />\n')
+            f.write('   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=%s&type=Date&theme=dark" />\n' % self.repo)
+            f.write('   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=%s&type=Date" />\n' % self.repo)
+            f.write('   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=%s&type=Date" />\n' % self.repo)
             f.write(' </picture>\n')
             f.write('</a>\n')
             '''
 
             '''
+
+    def _resolve_repo(self) -> str:
+        repo = os.environ.get("GITHUB_REPOSITORY")
+        if repo:
+            return repo.strip()
+
+        url = self._get_git_origin_url()
+        repo = self._parse_repo_from_url(url)
+        if repo:
+            return repo
+
+        return "Aethersailor/adblockfilters-modified"
+
+    def _resolve_branch(self) -> str:
+        ref = os.environ.get("GITHUB_REF", "")
+        if ref.startswith("refs/heads/"):
+            return ref[len("refs/heads/"):].strip()
+
+        for key in ("GITHUB_REF_NAME", "GITHUB_HEAD_REF", "GITHUB_BASE_REF"):
+            value = os.environ.get(key)
+            if value:
+                return value.strip()
+
+        try:
+            output = subprocess.check_output(
+                ["git", "remote", "show", "origin"],
+                stderr=subprocess.DEVNULL,
+                text=True,
+            )
+            match = re.search(r"HEAD branch: (.+)", output)
+            if match:
+                return match.group(1).strip()
+        except Exception:
+            pass
+
+        return "main"
+
+    def _get_git_origin_url(self) -> str:
+        try:
+            return subprocess.check_output(
+                ["git", "config", "--get", "remote.origin.url"],
+                stderr=subprocess.DEVNULL,
+                text=True,
+            ).strip()
+        except Exception:
+            return ""
+
+    def _parse_repo_from_url(self, url: str) -> str:
+        if not url:
+            return ""
+        url = url.strip()
+        if url.endswith(".git"):
+            url = url[:-4]
+        match = re.search(r"github\\.com[:/](?P<repo>[^/]+/[^/]+)$", url)
+        if match:
+            return match.group("repo")
+        return ""
