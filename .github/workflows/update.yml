@@ -100,13 +100,44 @@ jobs:
 
       - name: Setup SmartDNS
         run: |
-          mkdir -p $SMARTDNS_PATH
-          LATEST_URL=$(curl -s https://api.github.com/repos/pymumu/smartdns/releases/latest | grep "browser_download_url" | grep "smartdns-x86_64" | cut -d '"' -f 4)
-          echo "Downloading SmartDNS from: $LATEST_URL"
-          wget -q "$LATEST_URL" -O $SMARTDNS_PATH/smartdns
-          chmod +x $SMARTDNS_PATH/smartdns
-          cp smartdns.conf $SMARTDNS_PATH/smartdns.conf
-          nohup $SMARTDNS_PATH/smartdns -f -x -c $SMARTDNS_PATH/smartdns.conf > /dev/null 2>&1 &
+          set -e
+          mkdir -p "$SMARTDNS_PATH"
+
+          max_attempts=5
+          sleep_seconds=5
+
+          for attempt in $(seq 1 $max_attempts); do
+            echo "SmartDNS setup attempt ${attempt}/${max_attempts}"
+
+            LATEST_URL=$(curl -fsSL https://api.github.com/repos/pymumu/smartdns/releases/latest \
+              | grep "browser_download_url" \
+              | grep "smartdns-x86_64" \
+              | cut -d '"' -f 4 || true)
+
+            if [ -z "$LATEST_URL" ]; then
+              echo "Failed to resolve SmartDNS download URL."
+            else
+              echo "Downloading SmartDNS from: $LATEST_URL"
+              if wget -q "$LATEST_URL" -O "$SMARTDNS_PATH/smartdns" && [ -s "$SMARTDNS_PATH/smartdns" ]; then
+                chmod +x "$SMARTDNS_PATH/smartdns"
+                cp smartdns.conf "$SMARTDNS_PATH/smartdns.conf"
+                nohup "$SMARTDNS_PATH/smartdns" -f -x -c "$SMARTDNS_PATH/smartdns.conf" > /dev/null 2>&1 &
+                echo "SmartDNS started."
+                break
+              else
+                echo "SmartDNS download failed or empty binary."
+              fi
+            fi
+
+            if [ "$attempt" -eq "$max_attempts" ]; then
+              echo "SmartDNS setup failed after ${max_attempts} attempts."
+              exit 1
+            fi
+
+            echo "Retrying in ${sleep_seconds}s..."
+            sleep "$sleep_seconds"
+            sleep_seconds=$((sleep_seconds * 2))
+          done
 
       - name: Wait for SmartDNS
         run: |
