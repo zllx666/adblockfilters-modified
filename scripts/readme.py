@@ -3,6 +3,8 @@ import os
 import subprocess
 import time
 import json
+import urllib.request
+import urllib.error
 from datetime import datetime, timedelta, timezone
 from typing import List
 
@@ -30,6 +32,8 @@ class ReadMe(object):
             "",
             "https://testingcf.jsdelivr.net/gh",
         ]
+        self.upstream_repo = os.environ.get("UPSTREAM_REPO", "217heidai/adblockfilters")
+        self.upstream_branch = os.environ.get("UPSTREAM_BRANCH", "main")
         self.repo = self._resolve_repo()
         self.branch = self._resolve_branch()
 
@@ -156,31 +160,15 @@ class ReadMe(object):
             f.write("2. 改进了中国规则和无效规则的处理流程，现在每次生成规则前均会对这两类规则进行验证，不再使用历史数据。\n")
             f.write("3. 白名单自动同步上游仓库，并支持 `sources/local/white2.txt` 本地补充合并。\n")
             f.write("4. 域名提取与规则解析更完善，覆盖更多 filter/dns/host 规则格式，减少漏提取。\n")
-            f.write("5. 新增/独有规则源（相对原版，详见下表）：\n")
-            f.write("   - AdGuard Annoyances\n")
-            f.write("   - AdGuard Tracking Protection\n")
-            f.write("   - anti-AD\n")
-            f.write("   - CERT.PL's Warning List\n")
-            f.write("   - HageziMultiPro\n")
-            f.write("   - HaGeZi's Apple Tracker Blocklist\n")
-            f.write("   - HaGeZi's Badware Hoster Blocklist\n")
-            f.write("   - HaGeZi's OPPO & Realme Tracker Blocklist\n")
-            f.write("   - HaGeZi's Windows/Office Tracker Blocklist\n")
-            f.write("   - HaGeZi's Xiaomi Tracker Blocklist\n")
-            f.write("   - HaGeZi's Vivo Tracker Blocklist\n")
-            f.write("   - HaGeZi's Samsung Tracker Blocklist\n")
-            f.write("   - HaGeZi's Gambling Blocklist\n")
-            f.write("   - Malicious URL Blocklist\n")
-            f.write("   - OISD Big\n")
-            f.write("   - Online Malicious URL Blocklist\n")
-            f.write("   - PeterLowe\n")
-            f.write("   - Phishing URL Blocklist\n")
-            f.write("   - Scam Blocklist\n")
-            f.write("   - SmartTV\n")
-            f.write("   - Stalkerware\n")
-            f.write("   - uBlock Ads\n")
-            f.write("   - uBlock Badware risks\n")
-            f.write("   - uBlock Privacy\n")
+            f.write("5. 新增/独有规则源（相对上游仓库，详见下表）：\n")
+            unique_rules = self._get_unique_rule_names()
+            if unique_rules is None:
+                f.write("   - （暂时无法获取上游 README，自动对比未完成）\n")
+            elif not unique_rules:
+                f.write("   - （无）\n")
+            else:
+                for name in unique_rules:
+                    f.write("   - %s\n" % name)
             f.write("\n")
 
             f.write("## 订阅链接\n")
@@ -381,6 +369,67 @@ class ReadMe(object):
         if os.path.exists(source_path):
             return self._count_non_empty_lines(source_path)
         return None
+
+    def _fetch_text(self, url: str, timeout: int = 20) -> str:
+        try:
+            with urllib.request.urlopen(url, timeout=timeout) as resp:
+                return resp.read().decode("utf-8", errors="ignore")
+        except Exception:
+            return ""
+
+    def _extract_section(self, text: str, header: str) -> str:
+        if not text:
+            return ""
+        start = text.find(header)
+        if start < 0:
+            return ""
+        rest = text[start + len(header):]
+        next_idx = rest.find("\n## ")
+        if next_idx >= 0:
+            return rest[:next_idx]
+        return rest
+
+    def _parse_rule_names_from_section(self, section: str) -> List[str]:
+        names = []
+        if not section:
+            return names
+        for line in section.splitlines():
+            line = line.strip()
+            if not (line.startswith("|") and line.endswith("|")):
+                continue
+            parts = [p.strip() for p in line[1:-1].split("|")]
+            if len(parts) < 3:
+                continue
+            if parts[0] in ("规则", "Rule"):
+                continue
+            if "[原始链接]" not in parts[2]:
+                continue
+            names.append(parts[0])
+        return names
+
+    def _get_upstream_rule_names(self):
+        if not self.upstream_repo:
+            return None
+        url = "https://raw.githubusercontent.com/%s/%s/README.md" % (
+            self.upstream_repo,
+            self.upstream_branch,
+        )
+        text = self._fetch_text(url)
+        if not text:
+            return None
+        section = self._extract_section(text, "## 上游规则源")
+        names = self._parse_rule_names_from_section(section)
+        return set(name.strip() for name in names if name.strip())
+
+    def _get_unique_rule_names(self):
+        if not self.ruleList:
+            return []
+        upstream_names = self._get_upstream_rule_names()
+        if upstream_names is None:
+            return None
+        current_names = {rule.name.strip() for rule in self.ruleList if rule.name.strip()}
+        unique_names = sorted(current_names - upstream_names)
+        return unique_names
 
     def _resolve_repo(self) -> str:
         repo = os.environ.get("GITHUB_REPOSITORY")
