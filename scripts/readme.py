@@ -125,6 +125,8 @@ class ReadMe(object):
         beijing_tz = timezone(timedelta(hours=8))
         update_time = datetime.now(beijing_tz).strftime("%Y/%m/%d %H:%M:%S") + " (UTC+08:00)"
         total_rules, china_rules = self._get_rule_counts()
+        upstream_raw, upstream_unique, upstream_dedupe_rate = self._get_upstream_stats()
+        effective_count, effective_ratio = self._get_effective_stats()
         source_meta = self._load_source_meta()
 
         with open(self.filename, 'a') as f:
@@ -133,9 +135,14 @@ class ReadMe(object):
             f.write("\n")
             f.write("| 指标 | 数值 |\n")
             f.write("| :- | :- |\n")
-            f.write("| 上次更新 | %s |\n" % update_time)
-            f.write("| 规则总数目 | %s |\n" % (total_rules if total_rules is not None else "N/A"))
-            f.write("| 中国规则数目 | %s |\n" % (china_rules if china_rules is not None else "N/A"))
+            f.write("| 上次更新（北京时间） | %s |\n" % update_time)
+            f.write("| 上游规则总数（去重前） | %s |\n" % (upstream_raw if upstream_raw is not None else "N/A"))
+            f.write("| 上游规则总数（去重后） | %s |\n" % (upstream_unique if upstream_unique is not None else "N/A"))
+            f.write("| 上游规则去重率 | %s |\n" % (upstream_dedupe_rate if upstream_dedupe_rate is not None else "N/A"))
+            f.write("| 有效规则数量（可解析） | %s |\n" % (effective_count if effective_count is not None else "N/A"))
+            f.write("| 有效规则占比（检测域名） | %s |\n" % (effective_ratio if effective_ratio is not None else "N/A"))
+            f.write("| 成品规则总数 | %s |\n" % (total_rules if total_rules is not None else "N/A"))
+            f.write("| 中国规则数（Lite） | %s |\n" % (china_rules if china_rules is not None else "N/A"))
             f.write("\n")
 
             f.write("## 说明\n")
@@ -294,6 +301,49 @@ class ReadMe(object):
             return count
         except Exception:
             return None
+
+    def _format_ratio(self, numerator, denominator):
+        if numerator is None or denominator is None or denominator == 0:
+            return None
+        return "{:.2%}".format(numerator / denominator)
+
+    def _get_upstream_stats(self):
+        base_dir = os.path.dirname(self.filename)
+        upstream_dir = os.path.join(base_dir, "sources", "upstream")
+        raw_count = 0
+        unique_rules = set()
+        if not self.ruleList:
+            return None, None, None
+        for rule in self.ruleList:
+            path = os.path.join(upstream_dir, rule.filename)
+            try:
+                with open(path, "r", encoding="utf-8", errors="ignore") as f:
+                    for line in f:
+                        line = line.strip()
+                        if not line:
+                            continue
+                        if line.startswith(("#", "!")):
+                            continue
+                        raw_count += 1
+                        unique_rules.add(line)
+            except Exception:
+                continue
+        unique_count = len(unique_rules) if raw_count else 0
+        dedupe_rate = self._format_ratio(raw_count - unique_count, raw_count)
+        return raw_count, unique_count, dedupe_rate
+
+    def _get_effective_stats(self):
+        base_dir = os.path.dirname(self.filename)
+        build_dir = os.path.join(base_dir, "build")
+        invalid_path = os.path.join(build_dir, "black.txt")
+        domain_path = os.path.join(build_dir, "domain.txt")
+        invalid_count = self._count_non_empty_lines(invalid_path)
+        domain_count = self._count_non_empty_lines(domain_path)
+        if invalid_count is None or domain_count is None:
+            return None, None
+        effective_count = max(domain_count - invalid_count, 0)
+        effective_ratio = self._format_ratio(effective_count, domain_count)
+        return effective_count, effective_ratio
 
     def _load_source_meta(self) -> dict:
         base_dir = os.path.dirname(self.filename)
