@@ -2,6 +2,7 @@ import re
 import os
 import subprocess
 import time
+import json
 from datetime import datetime, timedelta, timezone
 from typing import List
 
@@ -124,6 +125,7 @@ class ReadMe(object):
         beijing_tz = timezone(timedelta(hours=8))
         update_time = datetime.now(beijing_tz).strftime("%Y/%m/%d %H:%M:%S") + " (UTC+08:00)"
         total_rules, china_rules = self._get_rule_counts()
+        source_meta = self._load_source_meta()
 
         with open(self.filename, 'a') as f:
             f.write("# AdBlock DNS Filters Modified\n")
@@ -229,12 +231,20 @@ class ReadMe(object):
                     tmp += " 加速链接 |"
                 else:
                     tmp += " 加速链接%d |"%(i)
-            tmp += " 更新日期 |\n"
+            tmp += " 规则数量 | 更新日期 |\n"
             f.write(tmp)
-            tmp = "| " + ":- | " * ( 2 + len(self.proxyList) + 1) + "\n"
+            tmp = "| " + ":- | " * ( 2 + len(self.proxyList) + 2) + "\n"
             f.write(tmp)
             for rule in self.ruleList:
-                f.write("| %s | %s |%s %s |\n" % (rule.name, rule.type, self.__subscribeLink(rule.filename, rule.url, base_dir="sources/upstream"),rule.latest))
+                count = self._get_source_count(rule, source_meta)
+                count_text = str(count) if count is not None else "N/A"
+                f.write("| %s | %s |%s %s | %s |\n" % (
+                    rule.name,
+                    rule.type,
+                    self.__subscribeLink(rule.filename, rule.url, base_dir="sources/upstream"),
+                    count_text,
+                    rule.latest,
+                ))
             f.write("\n")
             
             f.write("## Star History\n")
@@ -284,6 +294,43 @@ class ReadMe(object):
             return count
         except Exception:
             return None
+
+    def _load_source_meta(self) -> dict:
+        base_dir = os.path.dirname(self.filename)
+        meta_path = os.path.join(base_dir, "sources", "upstream", ".source_meta.json")
+        try:
+            with open(meta_path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            return {}
+
+    def _count_non_empty_lines(self, path: str) -> int:
+        try:
+            with open(path, "r", encoding="utf-8", errors="ignore") as f:
+                count = 0
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    if line.startswith(("#", "!")):
+                        continue
+                    count += 1
+                return count
+        except Exception:
+            return 0
+
+    def _get_source_count(self, rule: Rule, meta: dict):
+        if meta:
+            entry = meta.get(rule.filename)
+            if isinstance(entry, dict):
+                lines = entry.get("lines")
+                if isinstance(lines, int):
+                    return lines
+        base_dir = os.path.dirname(self.filename)
+        source_path = os.path.join(base_dir, "sources", "upstream", rule.filename)
+        if os.path.exists(source_path):
+            return self._count_non_empty_lines(source_path)
+        return None
 
     def _resolve_repo(self) -> str:
         repo = os.environ.get("GITHUB_REPOSITORY")
