@@ -1268,6 +1268,8 @@ $script,xmlhttprequest,third-party,domain=00ksw.com|01zww.com|0biquge.com|114zw.
 !
 ! NOTE: Specific rules
 !
+xiazai.zol.com.cn##.soft-summary__buttons > div[style^="width"]:not([class])
+xiazai.zol.com.cn##div[onclick^="zol_niux_tongji"]
 wzzy.cc##.xgplayer-error
 wzzy.cc###notice-overlay
 ||s.yimg.com/cv/apiv2/tw/bwchou25/
@@ -1306,7 +1308,6 @@ eprice.com.hk##div[style]:has(> div[id^="div-gpt-ad-"])
 wnacg05.cc###control_block
 wnacg05.cc#%#//scriptlet('abort-current-inline-script', 'Math.floor', 'tips')
 sohu.com#%#//scriptlet('json-prune', 'data.*.list.[-].resourceData.adData')
-toy-people.com##.article_insertAD
 news.cnyes.com##.a133dm9s
 crxs.me##.content-box:has(> div[class^="static-container-"] > a[href][target="_blank"])
 crxs.me#%#//scriptlet('abort-current-inline-script', 'document.createElement', 'visitUrl')
@@ -3291,8 +3292,8 @@ huavod.com,huaren.live#%#//scriptlet('set-constant', 'ConFig.config.ads', 'empty
 !+ NOT_PLATFORM(windows, mac, android)
 huavod.com,huaren.live#%#//scriptlet('trusted-replace-node-text', 'script', 'ConFig', 'let ConFig', 'var ConFig')
 !#if (adguard_app_windows || adguard_app_mac || adguard_app_android)
-||huavod.com/player/$replace=/let ConFig/var ConFig/,document
-||huaren.live/player/$replace=/let ConFig/var ConFig/,document
+||huavod.com/player/$replace=/let ConFig/var ConFig/,document,subdocument
+||huaren.live/player/$replace=/let ConFig/var ConFig/,document,subdocument
 !#endif
 ! https://github.com/AdguardTeam/AdguardFilters/issues/177520
 !+ PLATFORM(windows, mac, android)
@@ -5518,6 +5519,15 @@ newduba.cn###jq_youxi
 .z.dkt-ib.com
 ||cnzz.trafficmanager.net^
 ||cupfox.app^$third-party
+||03in08p3r1.com^
+||2xx63f0bfy.com^
+||nyv388w6lc.com^
+||gsk801280hh.com^
+||volcano93.top^
+||tempest33.com^
+||6acupxubky.com^
+||mkff.cn^
+||m485oq2gym.top^
 ||lp780937a.com^
 ||gsk801270hh.com^
 ||i5qquywfz.com^
@@ -5528,7 +5538,14 @@ newduba.cn###jq_youxi
 ||efmh.cn^
 ||precipice55.com^
 ||w562f5.cc^
-||fovyoqbhjnpvr7.cfd^
+||3lxk4afsb.com^
+||oj2c0dkk4.com^
+||gsk801271hh.com^
+||77zdmt8yq.com^
+||lonarzelq.com^
+||5yahh8v3.xyz^
+||m3ks1o8jz.com^
+||affxc.com^$third-party
 ||nb4ds7c13d.com^
 ||rzjdsm7tgz.com^
 ||twa735xojg.com^
@@ -14532,8 +14549,6 @@ meijutt.*/js/pcjs/
 ||711dm.com/color.
 ||joyacg.top/wp-content/uploads/*-640
 ||wnacg.com/game/
-||affxc.com^*-792-180.
-||affxc.com/topbanner-
 zhihu.com##.Pc-word-new
 dailijichang.com,qv2ray.org##.elementor-popup-modal
 dailijichang.com,qv2ray.org##.elementor-sticky--active[data-settings*="bottom"]
@@ -22343,6 +22358,7 @@ wss://*.com:800*/$third-party
 ##.row.nav-bottom + div[style^="display: block; position: relative; width: 0px; height:"]
 ##a[href*="aHR0cHM6Ly9xc2Z2bDExLmFsYXp2LmNvbS8zNzA4Lmh0bWw="]
 ||lzbao.net/syster.
+.cfd/$script,third-party,domain=twkan.com
 $csp=script-src 'self' * 'unsafe-inline',domain=erciyan.com|feiguaks.com|iqmxs.cc|jinpai123.net|hshfm.com|xbiqige.cc|1qxs.com|xddxsw.net|jakxs.net|bisowu.net|zyywenxue.com|xiakezw.com|biqul.com|biqugeks.org|girlsoncam.net|japonfilmleri.com|minaeast.net|shumi.la|59xs.com|biqugen.com|8181zw.vip|biqugequ.org|69shumi.com|fxxs3.com|efuxs.com|i3book.com|genbiquge.com|quanbiqu.com|pinshu.org|13xsw.com|bbiquge.cc|taobiquge.com|haijiaobooksw.top|zlobin.net|piaotianxiaoshuo.com|jvbiquge.com|vipbiquge.com|jpbqg7.com|zuizhong.net|oldtimeswx.org|5book.cc|softtechsolution.org|product44.com|snxsw.com|xiexinde.net|m.6666xsw.com|m.chenkuan.com|jmshuwu.net|wodexiaoshuoh.com|tetservices.net|haitangsoshu.org|4hrz.net|x33yq.org|56xiaoshuo.net|novelser.com|ykxs.cc|biqudd.com|diyibanzhu44444.com|dbrxs.org|kaixindu.net|1ingatlan.net|gaofuwu.org|yushuwu.cloud|yswxs.com|biquge2345.com|dingdian911.com|bqug8.com|xianguke.net|kunnu.com|yourbiquge.com|biquge345.com|666biquge.com|biquwx.cc|1kans.net|aidu123.com|biquluo.info|bqgh.com|maxshuku.com|shukuge.com|sthuojia.net|tvyun07.com|zk01.net
 $csp=script-src 'self' *,domain=yebiquge.com|zduxs.com|90shuyuan.com|hunhunxs.com|sswwxs.com|akexs.com|qqmmxs.com|qimiaoxs.cc|qimiaoxiaoshuo.com|wuwxs.com|biquge678.com|biqugezw.us
 !#Novels
@@ -22758,6 +22774,7 @@ fqsousou.com,kengso.com#@#.user-share
 ||ad.tencentmusic.com^
 ||ad.toutiao.com^
 ||ad.v3mh.com^
+||ad.weibo.com^
 ||ad.winrar.com.cn^
 ||ad.ximalaya.com^
 ||ad.xunkids.com^
@@ -22780,6 +22797,7 @@ fqsousou.com,kengso.com#@#.user-share
 ||adexpo.tencentmusic.com^
 ||adfilter.imtt.qq.com^
 ||adguanggao.eee114.com^
+||adimg.uve.weibo.com^
 ||adjust.cn^
 ||adjust.com^
 ||adks.hpplay.cn^
@@ -22797,6 +22815,7 @@ fqsousou.com,kengso.com#@#.user-share
 ||ads-video-al.xhscdn.com^
 ||ads-video-qc.xhscdn.com^
 ||ads.95516.com^
+||ads.auctions.yahoo.com^
 ||ads.cup.com.cn^
 ||ads.google.cn^
 ||ads.huan.tv^
@@ -22846,12 +22865,14 @@ fqsousou.com,kengso.com#@#.user-share
 ||adstats.tencentmusic.com^
 ||adstore-1252524079.file.myqcloud.com^
 ||adstore-index-1252524079.file.myqcloud.com^
+||adstrategy.biz.weibo.com^
 ||adstudio-assets.scdn.co^
 ||adstudio.spotify.com^
 ||adtago.s3.amazonaws.com^
 ||adtech.yahooinc.com^
 ||adtrack.quark.cn^
 ||adtracker.medproad.com^
+||adui.tg.meitu.com^
 ||adv-api.shenshiads.com^
 ||adv.sec.intl.miui.com^
 ||adv.sec.miui.com^
@@ -22872,6 +22893,7 @@ fqsousou.com,kengso.com#@#.user-share
 ||adx-open-service.youku.com^
 ||adx-os.anythinktech.com^
 ||adx-saas.advlion.com^
+||adx-strategy-api-cn.statisticslinks.com^
 ||adx.ads.heytapmobi.com^
 ||adx.ads.oppomobile.com^
 ||adx.appsdk.com.cn^
@@ -22949,7 +22971,6 @@ fqsousou.com,kengso.com#@#.user-share
 ||applog.uc.cn^
 ||applog.zijieapi.com^
 ||applovin.com^
-||appversion.115.com^
 ||aqyad.com^
 ||aspect-upush.umeng.com^
 ||auction.unityads.unity3d.com^
@@ -23271,6 +23292,7 @@ fqsousou.com,kengso.com#@#.user-share
 ||monitor.music.qq.com^
 ||monitor.uu.qq.com^
 ||monsetting.toutiao.com^
+||mores.toponad.com^
 ||ms.applovin.com^
 ||ms.applvn.com^
 ||ms4.applovin.com^
@@ -23393,6 +23415,7 @@ fqsousou.com,kengso.com#@#.user-share
 ||sdk.markmedia.com.cn^
 ||sdk.mobads.adwangmai.com^
 ||sdkapi.cloooud.com^
+||sdkapp.uve.weibo.com^
 ||sdkauth.hpplay.cn^
 ||sdkconf.avlyun.com^
 ||sdkconfig.ad.intl.xiaomi.com^
@@ -23457,6 +23480,7 @@ fqsousou.com,kengso.com#@#.user-share
 ||t2.fancyapi.com^
 ||t3.a.market.xiaomi.com^
 ||t7z.cupid.ptqy.gitv.tv^
+||tagtic.cn^
 ||tangram.e.qq.com^
 ||target.ads.jihuoniao.com^
 ||tdc.qq.com^
@@ -23509,6 +23533,7 @@ fqsousou.com,kengso.com#@#.user-share
 ||tracker.gitee.com^
 ||tracking.miui.com^
 ||tracking.rus.miui.com^
+||tuiguang.meitu.com^
 ||tvapp.hpplay.cn^
 ||tvuser-ch.cedock.com^
 ||tx-ad.a.yximgs.com^
