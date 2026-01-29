@@ -230,6 +230,8 @@ class ReadMe(object):
             f.write("| 规则17' |" + self.__subscribeLink("adblockclashclassicallite.yaml") + " %s | %s | Clash Classical yaml |\n" % (self._get_product_size_mb("adblockclashclassicallite.yaml") or "N/A", self._get_product_count("adblockclashclassicallite.yaml") or "N/A"))
             f.write("| 规则18 |" + self.__subscribeLink("adblockrouteros.txt") + " %s | %s | RouterOS |\n" % (self._get_product_size_mb("adblockrouteros.txt") or "N/A", self._get_product_count("adblockrouteros.txt") or "N/A"))
             f.write("| 规则18' |" + self.__subscribeLink("adblockrouteroslite.txt") + " %s | %s | RouterOS |\n" % (self._get_product_size_mb("adblockrouteroslite.txt") or "N/A", self._get_product_count("adblockrouteroslite.txt") or "N/A"))
+            f.write("| 规则19 |" + self.__subscribeLink("adblockrouterosadlist.txt") + " %s | %s | RouterOS AdList |\n" % (self._get_product_size_mb("adblockrouterosadlist.txt") or "N/A", self._get_product_count("adblockrouterosadlist.txt") or "N/A"))
+            f.write("| 规则19' |" + self.__subscribeLink("adblockrouterosadlistlite.txt") + " %s | %s | RouterOS AdList |\n" % (self._get_product_size_mb("adblockrouterosadlistlite.txt") or "N/A", self._get_product_count("adblockrouterosadlistlite.txt") or "N/A"))
             f.write("\n")
 
             f.write("## 上游规则源\n")

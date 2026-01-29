@@ -10,6 +10,7 @@ from .mihomo import Mihomo
 from .mosdns import MosDNS
 from .quantumultx import QuantumultX
 from .routeros import RouterOS
+from .routeros_adlist import RouterOSAdList
 from .shadowrocket import Shadowrocket
 from .singbox import SingBox
 from .smartdns import SmartDNS
