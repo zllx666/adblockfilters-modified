@@ -6,7 +6,7 @@ from typing import List,Dict,Set,Tuple
 from loguru import logger
 from tld import get_tld
 
-from app import APPBase, AdGuard, AdGuardHome, DNSMasq, Hosts, InviZible, Loon, Mihomo, QuantumultX, Shadowrocket, SingBox, SmartDNS, Surge
+from app import APPBase, AdGuard, AdGuardHome, DNSMasq, Hosts, InviZible, Loon, Mihomo, MosDNS, QuantumultX, Shadowrocket, SingBox, SmartDNS, Surge
 from readme import Rule
 from resolver import Resolver, FilterDomainInfo
 
@@ -367,6 +367,7 @@ class Filter(object):
                 Shadowrocket(blockList, unblockList, filterDict, filterList, filterList_var, ChinaSet, self.output_dir + "/adblockclash.list",    sourceRule),
                 SingBox     (blockList, unblockList, filterDict, filterList, filterList_var, ChinaSet, self.output_dir + "/adblocksingbox.json",  sourceRule),
                 SmartDNS    (blockList, unblockList, filterDict, filterList, filterList_var, ChinaSet, self.output_dir + "/adblocksmartdns.conf", sourceRule),
+                MosDNS      (blockList, unblockList, filterDict, filterList, filterList_var, ChinaSet, self.output_dir + "/adblockmosdns.txt",    sourceRule),
                 Surge       (blockList, unblockList, filterDict, filterList, filterList_var, ChinaSet, self.output_dir + "/adblocksurge.list",     sourceRule),
             ]
             for g in generaterList:

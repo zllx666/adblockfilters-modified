@@ -222,6 +222,8 @@ class ReadMe(object):
             f.write("| 规则13' |" + self.__subscribeLink("adblockloonlite.list") + " %s | %s | Loon |\n" % (self._get_product_size_mb("adblockloonlite.list") or "N/A", self._get_product_count("adblockloonlite.list") or "N/A"))
             f.write("| 规则14 |" + self.__subscribeLink("adblocksurge.list") + " %s | %s | Surge |\n" % (self._get_product_size_mb("adblocksurge.list") or "N/A", self._get_product_count("adblocksurge.list") or "N/A"))
             f.write("| 规则14' |" + self.__subscribeLink("adblocksurgelite.list") + " %s | %s | Surge |\n" % (self._get_product_size_mb("adblocksurgelite.list") or "N/A", self._get_product_count("adblocksurgelite.list") or "N/A"))
+            f.write("| 规则15 |" + self.__subscribeLink("adblockmosdns.txt") + " %s | %s | MosDNS v5 |\n" % (self._get_product_size_mb("adblockmosdns.txt") or "N/A", self._get_product_count("adblockmosdns.txt") or "N/A"))
+            f.write("| 规则15' |" + self.__subscribeLink("adblockmosdnslite.txt") + " %s | %s | MosDNS v5 |\n" % (self._get_product_size_mb("adblockmosdnslite.txt") or "N/A", self._get_product_count("adblockmosdnslite.txt") or "N/A"))
             f.write("\n")
 
             f.write("## 上游规则源\n")
