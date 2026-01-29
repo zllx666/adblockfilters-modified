@@ -126,7 +126,10 @@ class BlackList(object):
         self.__domainlistFile_CN_Google = os.path.join(self.__geoDir, "google-cn.txt")
         self.__domainlistUrl_CN_Google = "https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/refs/heads/release/google-cn.txt"
         self.__iplistFile_CN = os.path.join(self.__geoDir, "CN-ip-cidr.txt")
-        self.__iplistUrl_CN = "https://raw.githubusercontent.com/Aethersailor/geoip/refs/heads/release/text/cn-ipv4.txt"
+        geoip_repo = os.environ.get("GEOIP_REPO", "Aethersailor/geoip").strip()
+        if not geoip_repo:
+            geoip_repo = "Aethersailor/geoip"
+        self.__iplistUrl_CN = "https://raw.githubusercontent.com/%s/refs/heads/release/text/cn-ipv4.txt" % geoip_repo
         self.__maxTask = 500  # 控制并发数避免触发公共 DNS 的 QPS 限制
         self.__dns_timeout = 5.0
         self.__dns_lifetime = 8.0
