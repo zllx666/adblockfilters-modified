@@ -1517,6 +1517,10 @@ $removeparam=at_ptr_name
 $removeparam=at_recipient_id
 $removeparam=at_recipient_list
 $removeparam=at_send_date
+! Salesforce
+! https://help.salesforce.com/s/articleView?id=mktg.mc_gai_utm_parameters.htm&type=5
+$removeparam=sfmc_id
+$removeparam=sfmc_activityid
 ! https://github.com/brave/brave-browser/issues/24988
 $removeparam=ss_email_id
 ! https://github.com/brave/brave-browser/issues/37847
@@ -1698,19 +1702,18 @@ airtel.in##+js(no-xhr-if, analytics/bulk-pixel)
 ! https://elevenlabs.io/dubbing - Stores the last dubbing result
 elevenlabs.io##+js(set-local-storage-item, IIElevenLabsDubbingResult, $remove$)
 
-! Pepper redirection - pepper.ru/deals/post-428233 | pepper.pl/promocje/post-750379 | dealabs.com/bons-plans/post-2674687
+! Pepper redirection: only in old sales (new ones lost their title) - pepper.pl/promocje/post-750379 
 chollometro.com##+js(href-sanitizer, a[href*="https://www.chollometro.com/visit/"][title^="https://"], [title])
 dealabs.com##+js(href-sanitizer, a[href*="https://www.dealabs.com/visit/"][title^="https://"], [title])
 hotukdeals.com##+js(href-sanitizer, a[href*="https://www.hotukdeals.com/visit/"][title^="https://"], [title])
 mydealz.de##+js(href-sanitizer, a[href*="https://www.mydealz.de/visit/"][title^="https://"], [title])
 nl.pepper.com##+js(href-sanitizer, a[href*="https://nl.pepper.com/visit/"][title^="https://"], [title])
-pepper.it##+js(href-sanitizer, a[href*="https://www.pepper.it/visit/"][title^="https://"], [title])
 pepper.pl##+js(href-sanitizer, a[href*="https://www.pepper.pl/visit/"][title^="https://"], [title])
 pepper.ru##+js(href-sanitizer, a[href*="https://www.pepper.ru/visit/"][title^="https://"], [title])
 preisjaeger.at##+js(href-sanitizer, a[href*="https://www.preisjaeger.at/visit/"][title^="https://"], [title])
 promodescuentos.com##+js(href-sanitizer, a[href*="https://www.promodescuentos.com/visit/"][title^="https://"], [title])
 pelando.com.br##+js(href-sanitizer, a[href*="https://www.pelando.com.br/api/redirect?url="], ?url)
-! desidime.com##+js(href-sanitizer, a[href*="https://www.desidime.com/links?ref=][href*="&url="], &url)
+! desidime.com##+js(href-sanitizer, a[href*="https://www.desidime.com/links?ref="][href*="&url="], &url)
 
 ! https://github.com/uBlockOrigin/uAssets/issues/21342
 proboards.com,winclassic.net##+js(rmnt, script, vglnk)
@@ -2134,6 +2137,17 @@ r.mail.wowvegas.com%2Ftr%2Fop%2F*$image
 ! buyandship.com.sg 
 .buyandship.com.sg/opn/$image
 .buyandship.com.sg%2Fopn%2F$image
+! convertkit
+.convertkit-mail.com/o/$image
+.convertkit-mail.com%2Fo%2F$image
+! topuniversities.com
+/qs.topuniversities.com/e2t/o/*$image
+! dufry
+/t.news.dufry-communication.com/r/*$image
+! humblebundle
+/sptrack.mailer.humblebundle.com/q/*$image
+! outsideinc
+/hub.outsideinc.com/e3t/Cto/*$image
 ! others
 static.adsugar.ch/img?ord=$image
 static.adsugar.ch%2Fimg%3Ford%3D*$image
@@ -2163,7 +2177,6 @@ newsletter.adnz.co%2F*$image
 *%2Fr.*%2Ftr%2Fop%2F*$image
 /email-interact-v2/view/*$image
 *%2Femail-interact-v2%2Fview%2F*$image
-/e/o/*$image
 *%2Fe%2Fo%2F*$image
 /track/open.php?$image
 *%2Ftrack%2Fopen.php%3F*$image
@@ -2200,10 +2213,34 @@ newsletter.adnz.co%2F*$image
 /mail.*/ostat.php?$image
 *%2Fmail.*%2Fostat.php%3F*$image
 /email.*/opn/*$image
+/ae.edm.edm_open?$image
+*%2Fae.edm.edm_open%3F$image
+/gm.mmstat.com/*$image
+*%2Fgm.mmstat.com%2F*$image
+/MessageTrackLog.aspx?$image
+*%2FMessageTrackLog.aspx%3F$image
+/e2t/o/*$image
+*%2Fe2t%2Fo%2F$image
+/tr/impression?$image
+*%2Ftr%2Fimpression%3F$image
+.tracker.bannerflow.com/api/tr/impression?$image
+.rs6.net/on.jsp?$image
+.rs6.net%2Fon.jsp%3F*$image
+/sptrack.mailer.*/q/*$image
+*%2Fsptrack.mailer.*%2Fq%2F$image
+*%2Fo%2Fp%2F$image
+/e.mailer.*/o/p/*$image
+*%2Fe.mailer.*%2Fo%2Fp%2F$image
+/pixel.jpg?campaign_id=$image
+*%2Fpixel.jpg%3Fcampaign_id%3D*$image
+/link-mf.*/CI0/*$image
+*%2Flink-mf.*%2FCI0%2F$image
 ! https://github.com/uBlockOrigin/uBlock-discussions/discussions/929
 ||googleusercontent.com/*/wf/open?upn=$image
 ! https://github.com/uBlockOrigin/uAssets/issues/29466
 .salesforce.com%2Fservlet%2Fservlet.ImageServer%3F$image
+!/e/o/*$image
+!/o/p/*$image
 
 ! beacons.ai analytics
 ||beacons.ai/api/rtanalytics/
@@ -2677,6 +2714,9 @@ itmedia.co.jp##+js(set-local-storage-item, /^_cX_/, $remove$)
 ||vercel.com/*/vitals
 ||vercel.com/*/view
 ||vercel.com/api/stream/internal$ping
+
+! https://github.com/uBlockOrigin/uAssets/issues/32090
+||vidara.to/api/heartbeat
 
 ! Merge in resource-abuse.txt
 !#include resource-abuse.txt
