@@ -878,7 +878,7 @@ bing.com##+js(href-sanitizer, body a[href^="/rebates/welcome?url=http"], ?url)
 ||click.trafficguard.ai/*^lpurl=http$doc,urlskip=?lpurl
 
 ! https://www.reddit.com/r/uBlockOrigin/comments/1h62o3m/provide_a_clean_url_for_strict_blocks/
-||awstrack.me/L0/http$doc,urlskip=/\/L0\/(http[^\/?#]+)/ -uricomponent
+||awstrack.me/L0/http$doc,urlskip=/\/L0\/(http[^\/?#]+)/ -uricomponent -blocked
 
 ! https://forums.malwarebytes.com/topic/283053-legitimate-weblink-from-soundcloud-blocked/
 ||gate.sc^*url=http$doc,urlskip=?url
@@ -1133,15 +1133,21 @@ www.youtube.com##+js(no-xhr-if, /\/api\/stats\/atr\?.+?&rt=\d+\.\d+.+?&volume=\d
 ! https://github.com/uBlockOrigin/uAssets/issues/33220
 ! https://github.com/uBlockOrigin/uAssets/issues/33237
 ! https://github.com/uBlockOrigin/uAssets/issues/33276
-/^https:\/\/(www\.)?[a-z0-9]+\.[a-z]+(\.[a-z]+)?\/[a-z0-9]{4,8}\/?$/$script,1p,match-case,domain=~bizzabo.com|~leagueoflegends.com|~pavior.com
+/^https:\/\/(www\.)?[a-z0-9]+\.[a-z]+(\.[a-z]+)?\/[a-z0-9]{4}\/$/$script,1p,match-case,to=~xsso.leagueoflegends.com|~xsso.lolesports.com|~xsso.playvalorant.com|~xsso.riotgames.com|~xsso.valorantesports.com
+/^https:\/\/(www\.)?[a-z0-9]+\.[a-z]+(\.[a-z]+)?\/(?:analyticsdata|metrics)\/?$/$script,1p,match-case
 ! https://github.com/uBlockOrigin/uAssets/issues/33144
-@@/jsi18n/|$script,1p
+! @@/jsi18n/|$script,1p
 ! https://github.com/uBlockOrigin/uAssets/commit/58b2cf2dd92adf8eff2ad0a4d98a127cd650eca0
-@@/^https:\/\/(www\.)?[a-z0-9]+\.[a-z]+(\.[a-z]+)?\/config\/?$/$script,1p
+! @@/^https:\/\/(www\.)?[a-z0-9]+\.[a-z]+(\.[a-z]+)?\/config\/?$/$script,1p
 ! https://github.com/uBlockOrigin/uAssets/issues/33157
 ||zoom.us/*/app-telemetry.
 ||zoom.us/*/fingerprintjs-
 ||zoom.us/user/anonymous/telemetry
+! https://github.com/uBlockOrigin/uAssets/issues/33267
+! https://github.com/uBlockOrigin/uAssets/issues/33328
+! https://github.com/AdguardTeam/AdguardFilters/issues/233800
+||observe.runpod.io/static/web-vitals.js
+/e/*^ip=*^beacon=
 ! petametrics
 ||petametrics.com^$~script
 !#endif
@@ -3082,6 +3088,7 @@ lnk.to,smarturl.it##+js(set, linkfire.tracking, {})
 
 ! https://github.com/uBlockOrigin/uAssets/issues/32604
 ||fileditchfiles.me/api/plausible
+fileditchfiles.me##+js(no-fetch-if, method:POST body:/pageview|engagement/)
 
 ! https://github.com/uBlockOrigin/uAssets/issues/21372#issuecomment-4275264452
 ||pik.opendesktop.org/pik.js
@@ -3122,6 +3129,28 @@ webex.com##+js(no-xhr-if, svc.webex.com/metrics)
 
 ! https://github.com/uBlockOrigin/uAssets/issues/33245
 ||acapellas.eu/track.php
+
+! https://github.com/uBlockOrigin/uBlock-discussions/discussions/913#discussioncomment-17283112
+||tracking.cds.dmm.co.jp/v1/tracking/click?ic_key=$urlskip=/\?ic_key=ey[^.]+\.(ey[^.]+)\./ -base64 /"link_url":"([^"]+)"/
+||tracking.cds.dmm.com/v1/tracking/click?ic_key=$urlskip=/\?ic_key=ey[^.]+\.(ey[^.]+)\./ -base64 /"link_url":"([^"]+)"/
+
+! https://github.com/uBlockOrigin/uAssets/issues/33336
+||awin1.com/cread.php?awinmid=*&awinaffid=*&ued=$urlskip=?ued -blocked
+
+! https://doujin.koe-koe.com/voice/rj01295635
+||dlsite.com/maniax/dlaf/=/aid/*/url/$urlskip=/\/url\/(http.+)/ -uricomponent
+
+! https://gravure.mantan-web.jp/article/20260616dog00m200101000a.html
+||af.moshimo.com/af/c/click?*&url=$doc,urlskip=?url
+
+! https://github.com/uBlockOrigin/uAssets/issues/33385
+||analytics.dawg.network^
+
+! https://github.com/uBlockOrigin/uAssets/issues/33390
+||media.storiesig.info/get?__sig=*&uri=$urlskip=?uri,doc
+
+! https://github.com/uBlockOrigin/uBlock-issues/issues/4035
+||click.convertkit-mail4.com/$doc,urlskip=/([^/]+$)/ -base64
 
 ! Merge in resource-abuse.txt
 !#include resource-abuse.txt
