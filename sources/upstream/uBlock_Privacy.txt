@@ -1110,6 +1110,9 @@ dogdrip.net##+js(href-sanitizer, body a[href^="/link.php?url=http"], ?url)
 ! https://forum.donanimhaber.com/hepsiburada-ve-firsatlari-ana-konu--150987015-1787#161998768
 ||donanimhaber.com/ExternalLinkRedirect?*^url=http$doc,urlskip=?url
 donanimhaber.com##+js(href-sanitizer, body a[href^="/ExternalLinkRedirect?"][href*="url=http"], ?url)
+! https://www.f6s.com/company/zomato
+f6s.com##+js(aeld, , redirect)
+||f6s.com/redirect?url=http*$doc,urlskip=?url
 
 ! https://github.com/uBlockOrigin/uAssets/issues/24675 - click tracking
 ||cdn.digg.com/fragments/homepage/static/view-frontpage.js
@@ -1148,6 +1151,7 @@ www.youtube.com##+js(no-xhr-if, /\/api\/stats\/atr\?.+?&rt=\d+\.\d+.+?&volume=\d
 ! https://github.com/AdguardTeam/AdguardFilters/issues/233800
 ||observe.runpod.io/static/web-vitals.js
 /e/*^ip=*^beacon=
+/e/*^ip=*^compression=
 ! petametrics
 ||petametrics.com^$~script
 !#endif
@@ -2719,6 +2723,7 @@ evropa2.cz##+js(set-local-storage-item, /cnc_alien_invasion_code|pixelsLastFired
 
 ! https://github.com/uBlockOrigin/uAssets/issues/25757
 myanimelist.net##+js(no-fetch-if, method:POST body:/content_view|impression|page_view/)
+||myanimelist.net/ux/
 
 ! https://www.tvguide.com/listings/
 ! https://www.reddit.com/r/Adguard/comments/1keorq3/trouble_with_metacriticcom_no_trailers_play/
@@ -3066,7 +3071,7 @@ itmedia.co.jp##+js(set-local-storage-item, /^_cX_/, $remove$)
 ||detect-ccd.creativecloud.adobe.com^
 
 ! https://github.com/uBlockOrigin/uAssets/issues/32424
-lnk.to,smarturl.it##+js(set, linkfire.tracking, {})
+smarturl.it##+js(set, linkfire.tracking, {})
 
 ! https://github.com/uBlockOrigin/uAssets/issues/32431
 /^https:\/\/www\.[a-z0-9]{8}\.com\/i\/[A-Z0-9]{5}\/[A-Z0-9]{6}\/$/$image,3p,match-case,to=com
@@ -3153,7 +3158,25 @@ webex.com##+js(no-xhr-if, svc.webex.com/metrics)
 ||click.convertkit-mail4.com/$doc,urlskip=/([^/]+$)/ -base64
 
 ! https://github.com/uBlockOrigin/uAssets/issues/33280
-||streamcash.to/embed/ping/
+||streamcash.to/embed/$ping
+
+! https://github.com/uBlockOrigin/uAssets/issues/33457
+||tm.jsuol.com.br^
+
+! https://github.com/easylist/easylist/issues/24516
+||directg.jp/js/fingerprint2.js$script,redirect=fingerprint2.js,important
+
+/fingerprint2.js$script,redirect=fingerprint2.js
+/fingerprint2.min.js$script,redirect=fingerprint2.js
+
+! https://github.com/uBlockOrigin/uAssets/issues/26362
+||curiosity.sheepesports.com^
+
+! https://github.com/AdguardTeam/AdguardFilters/issues/234519
+mashable.com##+js(href-sanitizer, a[href^="https://zdcs.link/"], ?u)
+
+! https://github.com/uBlockOrigin/uAssets/issues/33502
+||prydwen.gg/api/v1/ping/
 
 ! Merge in resource-abuse.txt
 !#include resource-abuse.txt
