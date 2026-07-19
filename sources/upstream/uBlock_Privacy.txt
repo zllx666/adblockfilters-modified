@@ -1441,6 +1441,7 @@ $removeparam=fbadid
 ! https://www.facebook.com/share/p/19oiH7iTxz/
 ||facebook.com^$removeparam=share_url
 ! Yandex Metrika
+$removeparam=clckid
 ! https://github.com/brave/brave-browser/issues/33216
 $removeparam=ymclid
 $removeparam=ysclid
@@ -1470,6 +1471,8 @@ $removeparam=hsa_src
 $removeparam=hsa_tgt
 $removeparam=hsa_ver
 $removeparam=hsCtaTracking
+! https://community.hubspot.com/t/what-does-hss-channel-in-the-utm-refer-to/86913
+$removeparam=hss_channel
 ! MailChimp click tracking
 $removeparam=mc_eid
 ! Adobe SiteCatalyst Campaign Tracking ID parameter
@@ -3164,6 +3167,7 @@ webex.com##+js(no-xhr-if, svc.webex.com/metrics)
 
 ! https://github.com/uBlockOrigin/uAssets/issues/33280
 ||streamcash.to/embed/$ping
+||streamcash.to/embed/$xhr,method=post
 
 ! https://github.com/uBlockOrigin/uAssets/issues/33457
 ||tm.jsuol.com.br^
@@ -3188,8 +3192,10 @@ vaughn.live##+js(no-fetch-if, method:POST body:zaraz)
 ||vaughn.live/vsz/
 
 ! https://github.com/uBlockOrigin/uAssets/issues/33072#issuecomment-4937969164
-!||x.com/i/api/1.1/flow/*.json
-!x.com##+js(no-xhr-if, /i/api/1.1/flow/viewer.json)
+!x.com##+js(trusted-edit-inbound-object, Object.entries, 0, '.log="[{\"_category_\":\"client_event\",\"format_version\":2,\"triggered_on\":0,\"event_info\":\"\",\"message\":\"\",\"items\":[],\"event_namespace\":{\"page\":\"\",\"component\":\"\",\"action\":\"\",\"client\":\"m5\"},\"client_event_sequence_start_timestamp\":0,\"client_event_sequence_number\":0,\"client_app_id\":\"\"}]"')
+
+! https://github.com/uBlockOrigin/uAssets/issues/12635#issuecomment-4982050273
+telegraph.co.uk##.onward-journey
 
 ! Merge in resource-abuse.txt
 !#include resource-abuse.txt
