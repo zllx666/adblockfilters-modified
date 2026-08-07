@@ -79343,6 +79343,8 @@ biteki.com#$?#.slick-slide > div[id] + script:upward(1) { remove: true; }
 ! Blocking piwik analytics subdomain(for DNS filtering)
 |piwik.
 !
+||posthog.russpass.ru^
+||api.analytics.dobrosvyaz.com^
 ||tag-v*.kuzen.io^
 ||stats-cdn.polyspeak.ai^
 ||dap.hindustantimes.com^
@@ -182371,7 +182373,13 @@ naver.com#%#//scriptlet('trusted-json-set', 'JSON.stringify', '$.env.br_sr', '38
 !
 ! NOTE: Specific rules
 !
+||api.autogram.site/api/tracking/track.js
+||ernax.pro/cdn-cgi/trace
+||petersenshunting.com/js/convivaAppTracker.js
+||content.osgnetworks.tv/*/content/ga4.js
+||content.osgnetworks.tv/js/global/permutive.js
 ||deltaforcetools.gg/js/trackless-0.0.3.umd.min.js
+||cine.su/api/site-beacon|
 ||ac.cnstrc.com/v2/behavioral_action/
 ||openart.ai/4vu8/
 ||stolicaonego.ru/ajax/stat/
@@ -183062,7 +183070,6 @@ airlift.net#%#//scriptlet('abort-on-property-read', 'posthog')
 ||br.reco.ebu.io/v3/collect?s=
 ||br24.pa.br.de/event?s=
 ||ua.financialexpress.com/personlization-sdk.min.js
-||etsy.com/include/tags.js
 ||etsy.com/api/v*/ajax/public/bacon|
 ||etsy.com/api/v*/ajax/public/statsd|
 ||tag.assembly.go.kr:*/nlog/log/event
@@ -188191,6 +188198,8 @@ mediamarkt.de#%#//scriptlet('abort-on-property-write', 'ftr__startScriptLoad')
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/197963
 ! aglint-disable no-invalid-modifiers
+!+ NOT_VALIDATE PLATFORM(windows, mac, android, cli)
+||digidip.net/visit?url=$urltransform=/^https?:\/\/(?:[a-z0-9-]+\.)*?.*\.digidip\.net.*url=([^&]*)/\$1/|pct
 ! aglint-enable no-invalid-modifiers
 !
 ! dzen.ru
@@ -190329,6 +190338,7 @@ $app=com.miui.analytics
 ||analytics.qoqa.com^
 !
 ! Appsflyer
+||tfpodf.ars.appsflyersdk.com^
 ||inapps.appsflyersdk.com^
 ||skadsdk.appsflyersdk.com^
 ||attr.appsflyersdk.com^
@@ -190344,6 +190354,7 @@ dlsdk.appsflyersdk.com^
 ||*launches.appsflyersdk.com^
 ||*conversions.appsflyersdk.com^
 ||*register.appsflyersdk.com^
+||lklfwu-inapps.appsflyersdk.com^
 ||adrevenue.appsflyer.com^
 ||api.appsflyer.com^
 ||api2.appsflyer.com^
@@ -190542,7 +190553,6 @@ dlsdk.appsflyer.com^
 ||mebed.dm-event.net^
 ||clck.yandex.ru^$app=com.edadeal.android
 ||bstream.kzhi.tech^
-||lklfwu-inapps.appsflyersdk.com^
 ||mob2.welltastic-app.com^
 ||amplitude.thepure.app^
 ||amplilab.thepure.app^
@@ -197238,6 +197248,7 @@ kizi.com#%#window.google_trackConversion = function() {};
 ||discopond.com^
 ||discreetfield.com^
 ||discreetquarter.com^
+||distantflame.com^
 ||distilltable.com^
 ||distributionpocket.com^
 ||distributiontomatoes.com^
@@ -197719,6 +197730,7 @@ kizi.com#%#window.google_trackConversion = function() {};
 ||kidpowers.com^
 ||kindlereunion.com^
 ||kingsealed.com^
+||kitchenbasin.com^
 ||kitetuning.com^
 ||kittentacos.com^
 ||kittycatking.com^
@@ -198060,6 +198072,7 @@ kizi.com#%#window.google_trackConversion = function() {};
 ||pinchsquirrel.com^
 ||pincourse.com^
 ||pingsurvey.com^
+||pipadvance.com^
 ||piquantgrove.com^
 ||piquantmeadow.com^
 ||piquantpigs.com^
