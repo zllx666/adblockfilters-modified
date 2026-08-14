@@ -78,8 +78,7 @@ tvtoday.de##+js(nosiif, fireEvent, 500)
 ! https://forums.lanik.us/viewtopic.php?p=129561#p129561
 @@||a.bf-ad.net/makabo/ads_fol_init.js$script,domain=chip.de
 ! https://github.com/uBlockOrigin/uAssets/issues/6587
-||chip.de/*&$script,1p
-chip.de##.js_download_button:has(> a.Download-Button--Free[href*="withinstaller"][href*="lastchanged"])
+chip.de##.DownloadPageWidget-Cta > .RUC-DownloadButton-Wrap:has(> div > a.aff-link[href*="&deliver=installer&from=dl_button"])
 ! https://github.com/uBlockOrigin/uAssets/issues/7589
 chip.de##+js(json-prune, enabled, force_disabled)
 
@@ -303,6 +302,8 @@ facebook.com,facebookwkhpilnemxj7asaniu7vnjjbiltxjqhye3mhbshg7kx5tfyd.onion###wa
 facebook.com,facebookwkhpilnemxj7asaniu7vnjjbiltxjqhye3mhbshg7kx5tfyd.onion###watch_feed div:not([class]) > div:not([class]) div[class] [class] > a[href*="utm_source=facebook"] span[class] > span[class][style*="-webkit-line-clamp"]:has-text(広告):upward(div:not([class]) > div:not([class])):style(height: 0 !important; overflow: hidden !important;)
 ! https://github.com/uBlockOrigin/uAssets/issues/3367#issuecomment-2094875891
 facebook.com,facebookwkhpilnemxj7asaniu7vnjjbiltxjqhye3mhbshg7kx5tfyd.onion##:matches-path(/search/) div[role="article"] span > a[href]:not([href^="/groups/"]):not([href*="section_header_type"]):matches-attr(href="/__cft__\[0\]=[-\w]{265,}/"):upward([role="article"]):style(height: 0 !important; overflow: hidden !important;)
+facebook.com,facebookwkhpilnemxj7asaniu7vnjjbiltxjqhye3mhbshg7kx5tfyd.onion##div[aria-posinset] > div[data-virtualized][style]:has(div[style^="border-radius:"] a[href^="?__cft__"]:matches-attr(href="/__cft__\[0\]=[-\w]{290,}/"))
+facebook.com,facebookwkhpilnemxj7asaniu7vnjjbiltxjqhye3mhbshg7kx5tfyd.onion###right_rail_container div[data-visualcompletion]:has(div[data-visualcompletion] a[target="rhcad2"])
 ! https://github.com/uBlockOrigin/uAssets/issues/3367#issuecomment-1993620105
 ! https://github.com/uBlockOrigin/uAssets/issues/3367#issuecomment-1999029976
 ! https://www.reddit.com/r/uBlockOrigin/comments/1bjfs9x/facebook_loading_slow/kvraphx/
@@ -7103,6 +7104,7 @@ pornhub.*###pb_block
 pornhub.*##.menuLinkDiv:has(a[href^="https://www.spicevids.com/"])
 pornhub.*##div.halfWidth.menuLink:has(a[href^="https://fancentro.com/"])
 pornhub.*##a[href^="https://fancentro.com"]
+pornhub.*##.emptyBlockSpace
 ! https://github.com/uBlockOrigin/uAssets/issues/11753
 pornhub.*##+js(set, page_params.holiday_promo, true)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/132379
